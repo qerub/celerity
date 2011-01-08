@@ -31,6 +31,7 @@ module Celerity
   module Container
     include Celerity::Exception
     include Celerity::ShortInspect
+    include Celerity::XpathSupportForContainer
 
     # Points back to the Browser instance that contains this element
     attr_reader :browser

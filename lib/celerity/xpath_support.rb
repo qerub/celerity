@@ -1,10 +1,8 @@
 module Celerity
 
-  #
-  # Module to search by xpath
-  #
-
-  module XpathSupport
+  # NOTE: This is an ugly hack.
+  module AbstractXpathSupport
+    # Abstract: xpath_root
 
     #
     # Get the first element found matching the given XPath.
@@ -15,7 +13,7 @@ module Celerity
 
     def element_by_xpath(xpath)
       assert_exists
-      obj = @page.getFirstByXPath(xpath)
+      obj = xpath_root.getFirstByXPath(xpath)
       element_from_dom_node(obj, ":xpath and #{xpath.inspect}")
     end
 
@@ -28,7 +26,7 @@ module Celerity
 
     def elements_by_xpath(xpath)
       assert_exists
-      objects = @page.getByXPath(xpath)
+      objects = xpath_root.getByXPath(xpath)
       # should use an ElementCollection here?
       objects.map { |o| element_from_dom_node(o) }
     end
@@ -45,6 +43,23 @@ module Celerity
       element.extend(ClickableElement) unless element.is_a?(ClickableElement)
 
       element
+    end
+
+  end
+
+  module XpathSupport
+    include AbstractXpathSupport
+
+    def xpath_root
+      @page
+    end
+  end
+
+  module XpathSupportForContainer
+    include AbstractXpathSupport
+
+    def xpath_root
+      @object
     end
   end
 end
